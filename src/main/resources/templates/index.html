@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -14,40 +15,10 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="css/styles.css" rel="stylesheet" />
-    <style type="text/css">
-        a:link { color: blue; text-decoration: none;}
-        a:visited { color: black; text-decoration: none;}
-        a:hover { color: blue; text-decoration: none;}
-    </style>
 </head>
 <body>
 <!-- Navigation-->
-<div class="container mb-3 mt-2">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">토모링크</a>
-            <ul class="nav justify-content-end">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">홈</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">커뮤니티</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">로그인</a>
-                </li>
-                <li class="nav-item dropdown ">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        글쓰기
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">친구를 구해요</a></li>
-                        <li><a class="dropdown-item" href="#">토모링크 얼굴 등록</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
+<div th:replace="top :: common_header">
 </div>
 <!-- Masthead-->
 <header class="masthead" style="background: url('./assets/img/bg-masthead.jpg') no-repeat center center;">
@@ -66,62 +37,42 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="row">
-                    <div class="card text-bg-dark row-card">
-                        <a href="#">
-                            <img src="..." class="card-img" alt="...">
+                    <a href="#">
+                        <div class="card text-bg-dark row-card">
+                            <img src="..." class="card-img">
                             <div class="card-img-overlay">
-                                <h5 class="card-title">Card title</h5>
+                                <h5 class="card-title">친구 찾기</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="card text-bg-dark mt-2 row-card">
+                            <img src="..." class="card-img">
+                            <div class="card-img-overlay">
+                                <h5 class="card-title">홍보 게시판</h5>
                                 <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
                                 <p class="card-text"><small>Last updated 3 mins ago</small></p>
                             </div>
-                        </a>
-                    </div>
-                    <div class="card text-bg-dark mt-2 row-card">
-                        <img src="..." class="card-img" alt="...">
-                        <div class="card-img-overlay">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small>Last updated 3 mins ago</small></p>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card text-bg-dark mt-2 side-card">
-                    <img src="..." class="card-img" alt="...">
-                    <div class="card-img-overlay">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                        <p class="card-text"><small>Last updated 3 mins ago</small></p>
+                <a href="#">
+                    <div class="card text-bg-dark mt-2 side-card">
+                        <img src="..." class="card-img">
+                        <div class="card-img-overlay">
+                            <h5 class="card-title">토모링크의 얼굴들</h5>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
 </section>
-<footer class="footer bg-light">
-    <hr>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 h-100 text-center text-lg-start my-auto">
-                <p class="text-muted small mb-4 mb-lg-0" style="font-weight:bold;">Contact</p>
-                <p class="text-muted small mb-4 mb-lg-0">baj2121@naver.com</p>
-            </div>
-            <div class="col-lg-6 h-100 text-center text-lg-end my-auto">
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item me-4">
-                        <a href="#!"><i class="bi-facebook fs-3"></i></a>
-                    </li>
-                    <li class="list-inline-item me-4">
-                        <a href="#!"><i class="bi-twitter fs-3"></i></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="#!"><i class="bi-instagram fs-3"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+<footer th:replace="footer :: common_footer">
 </footer>
 <!-- Jquery Import -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
