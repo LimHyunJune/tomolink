@@ -6078,6 +6078,11 @@ textarea.form-control-lg {
     outline: 0;
     transition: transform 0.3s ease-in-out;
   }
+
+  .invisible-group
+  {
+    visibility: hidden;
+  }
 }
 @media (max-width: 575.98px) and (prefers-reduced-motion: reduce) {
   .offcanvas-sm {

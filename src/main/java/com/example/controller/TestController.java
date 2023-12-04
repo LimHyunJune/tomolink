@@ -8,8 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class TestController {
 
+    @GetMapping
     public String index()
     {
         return "index";
+    }
+
+    @GetMapping("/friends")
+    public String friends()
+    {
+        return "friends";
     }
 }
