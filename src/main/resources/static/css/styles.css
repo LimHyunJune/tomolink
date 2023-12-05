@@ -10929,3 +10929,8 @@ footer.footer {
 {
     height:30vh;
 }
+
+textarea{
+    height: 30vh;
+    resize: none;
+}
