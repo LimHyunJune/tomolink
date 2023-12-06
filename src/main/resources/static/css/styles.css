@@ -10845,7 +10845,7 @@ textarea.form-control-lg {
 
 header.masthead {
   position: relative;
-  background-color: #343a40;
+  background-color: transparent;
   background-size: cover;
   padding-top: 8rem;
   padding-bottom: 8rem;

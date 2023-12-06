@@ -19,7 +19,7 @@
 </head>
 <body>
 <!-- Navigation-->
-<div th:replace="top :: common_header">
+<div th:replace="common/top :: common_header">
 </div>
 <!-- Masthead-->
 <header class="masthead" style="background: url('./assets/img/bg-masthead.jpg') no-repeat center center;">
@@ -33,7 +33,7 @@
     </div>
 </header>
 <!-- Icons Grid-->
-<section class="features-icons bg-light main-contents">
+<section class="features-icons bg-light">
     <div class="container">
        <form>
            <div class="row">
@@ -77,6 +77,14 @@
                        </label>
                    </div>
                </div>
+               <div class="col-2">
+                   <div class="form-check">
+                       <input class="form-check-input" type="checkbox" value="" id="love">
+                       <label class="form-check-label" for="love">
+                           아이돌
+                       </label>
+                   </div>
+               </div>
            </div>
            <div class="form-group mt-1">
                <input class="form-control" placeholder="ex) 1월 오사카에 3박 4일 여행가요!">
@@ -95,7 +103,7 @@
        </form>
     </div>
 </section>
-<footer th:replace="footer :: common_footer">
+<footer th:replace="common/footer :: common_footer">
 </footer>
 <!-- Jquery Import -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
