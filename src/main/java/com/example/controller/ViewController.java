@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
-public class TestController {
+public class ViewController {
 
     @GetMapping
     public String index()
@@ -16,7 +16,7 @@ public class TestController {
     }
 
     @GetMapping("friends")
-    public String friends()
+    public String friendsForm()
     {
         return "friends";
     }
@@ -28,9 +28,23 @@ public class TestController {
     }
 
     @PostMapping("add")
-    public String addPost()
+    public String addPost() { return "redirect:/friends";}
+
+    @GetMapping("signin")
+    public String signInForm()
     {
-        // PRG Pattern
-        return "redirect:/friends";
+        return "signin";
+    }
+
+    @GetMapping("signup")
+    public String signUpForm()
+    {
+        return "signup";
+    }
+
+    @PostMapping("signup")
+    public String signUp()
+    {
+        return "redirect:/signin";
     }
 }
