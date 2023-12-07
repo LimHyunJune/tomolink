@@ -34,22 +34,26 @@
                 <div class="card card-signin my-5">
                     <div class="card-body">
                         <h5 class="card-title text-center"><b>Sign Up</b></h5>
-                        <form class="form-signin">
+                        <form class="form-signin" th:object="${signUpForm}" th:action method="post">
                             <div class="form-label-group">
-                                <input type="text" id="signUpName" class="form-control" placeholder="ID" onkeyup="clickEnter()" required autofocus>
-                                <label for="signUpName">Name</label>
+                                <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="ID" onkeyup="clickEnter()" required autofocus>
+                                <label for="name">Name</label>
                             </div>
                             <div class="form-label-group mt-1">
-                                <input type="text" id="signUpId" class="form-control" placeholder="ID" onkeyup="clickEnter()" required autofocus>
-                                <label for="signUpId">ID</label>
+                                <input type="text" id="email" th:field="*{email}" class="form-control" placeholder="ID" onkeyup="clickEnter()" required autofocus>
+                                <label for="email">Email</label>
+                                <div class="field-error" th:if="${errors?.containsKey('email')}" th:text="${errors['email']}">
+                                </div>
                             </div>
                             <div class="form-label-group">
-                                <input type="password" id="signUpPassword" class="form-control" placeholder="Password" onkeyup="clickEnter()" required>
-                                <label for="signUpPassword">Create Password</label>
+                                <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Password" onkeyup="clickEnter()" required>
+                                <label for="password">Create Password</label>
+                                <div class="field-error" th:if="${errors?.containsKey('password')}" th:text="${errors['password']}">
+                                </div>
                             </div>
                             <div class="form-label-group">
-                                <input type="password" id="signUpConfirmPassword" class="form-control" placeholder="Password" onkeyup="clickEnter()" required>
-                                <label for="signUpConfirmPassword">Confirm Password</label>
+                                <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" placeholder="Password" onkeyup="clickEnter()" required>
+                                <label for="confirmPassword">Confirm Password</label>
                             </div>
                             <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" >Sign up</button>
                         </form>
