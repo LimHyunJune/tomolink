@@ -34,14 +34,14 @@
                 <div class="card card-signin my-5">
                     <div class="card-body">
                         <h5 class="card-title text-center"><b>Sign In</b></h5>
-                        <form class="form-signin">
+                        <form class="form-signin" th:action method="post">
                             <div class="form-label-group">
-                                <input type="text" id="signInId" class="form-control" placeholder="ID" required autofocus>
-                                <label for="signInId">ID</label>
+                                <input type="text" id="email" name="email" class="form-control" placeholder="ID" required autofocus>
+                                <label for="email">Email</label>
                             </div>
                             <div class="form-label-group">
-                                <input type="password" id="signInPassword" class="form-control" placeholder="Password" required>
-                                <label for="signInPassword">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                                <label for="password">Password</label>
                             </div>
                             <a href="#" style="color:#0B50BB; text-decoration: none;">Forgot Password?</a>
                             <button class="btn btn-lg btn-primary btn-block text-uppercase mt-4" type="submit" >Sign in</button>
