@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.common.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -16,21 +16,5 @@ public class ViewController {
     {
         return "index";
     }
-
-    @GetMapping("friends")
-    public String friendsForm()
-    {
-        return "friends";
-    }
-
-    @GetMapping("add")
-    public String addForm()
-    {
-        return "add";
-    }
-
-    @PostMapping("add")
-    public String addPost() { return "redirect:/friends";}
-
 
 }

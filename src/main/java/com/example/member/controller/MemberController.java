@@ -1,9 +1,9 @@
-package com.example.controller;
+package com.example.member.controller;
 
-import com.example.dto.SignInForm;
-import com.example.dto.SignUpForm;
-import com.example.entity.Member;
-import com.example.service.MemberService;
+import com.example.member.service.MemberService;
+import com.example.member.dto.SignInForm;
+import com.example.member.dto.SignUpForm;
+import com.example.member.entity.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,16 +15,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @Controller
 @RequestMapping("/")
-public class LoginController {
-
+public class MemberController {
     private final MemberService memberService;
     @Autowired
-    public LoginController(MemberService memberService)
+    public MemberController(MemberService memberService)
     {
         this.memberService = memberService;
     }
@@ -67,9 +65,9 @@ public class LoginController {
         }
 
         Member member = Member.builder()
-                        .name(form.getName())
-                        .email(form.getEmail())
-                        .password(form.getPassword()).build();
+                .name(form.getName())
+                .email(form.getEmail())
+                .password(form.getPassword()).build();
         memberService.save(member);
         return "redirect:/signin";
     }
