@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class FriendSearchService {
 
@@ -21,5 +23,10 @@ public class FriendSearchService {
     public FriendSearch save(FriendSearch friendSearch)
     {
         return friendSearchRepository.save(friendSearch);
+    }
+
+    public List<FriendSearch> findAll()
+    {
+        return friendSearchRepository.findAll();
     }
 }
