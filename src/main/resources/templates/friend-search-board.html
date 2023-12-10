@@ -8,7 +8,7 @@
     <meta name="author" content="" />
     <title>Tomolink</title>
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="icon" type="image/x-icon" th:href="@{assets/favicon.ico}" />
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" type="text/css" />
     <!-- Google fonts-->
@@ -17,18 +17,18 @@
     <!-- Bootstrap datatable -->
     <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="css/styles.css" rel="stylesheet" />
 
     <!-- windmill table -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="css/tailwind.output.css" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/tailwind.output.css}" />
 </head>
 <body>
 <!-- Navigation-->
 <div th:replace="common/top :: common_header">
 </div>
 <!-- Masthead-->
-<header class="masthead" style="background: url('./assets/img/bg-masthead.jpg') no-repeat center center;">
+<header class="masthead" style="background: url('./assets/img/bg-sky.jpg') no-repeat center center;">
     <div class="container position-relative">
         <div class="row justify-content-center">
             <div class="col-xl-6">
@@ -41,10 +41,10 @@
 <!-- Icons Grid-->
 <section class="features-icons bg-light main-contents">
     <div class="container">
-        <table class="w-full whitespace-no-wrap table" id="example">
+        <table class="w-full whitespace-no-wrap table" id="posts">
             <thead>
                 <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                    <th class="px-4 py-3" style="width:20%">Client</th>
+                    <th class="px-4 py-3" style="width:20%">User</th>
                     <th class="px-4 py-3" style="width:40%">Title</th>
                     <th class="px-4 py-3" style="width:20%">Tag</th>
                     <th class="px-4 py-3" style="width:20%">Date</th>
@@ -78,8 +78,7 @@
                     <td class="px-4 py-3 text-xs">
                         <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100" th:text="${post.tag}"></span>
                     </td>
-                    <td class="px-4 py-3 text-sm">
-                        6/10/2020
+                    <td class="px-4 py-3 text-sm" th:text="${{post.createdAt}}">
                     </td>
                 </tr>
             </tbody>
@@ -96,7 +95,7 @@
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
-<script src="js/friends.js"></script>
+<script th:src="@{/js/friends.js}"></script>
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 <!-- * *                               SB Forms JS                               * *-->
 <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->

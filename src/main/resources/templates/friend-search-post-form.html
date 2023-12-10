@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Tomolink</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" type="text/css" />
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/tailwind.output.css}" />
+</head>
+<body>
+<!-- Navigation-->
+<div th:replace="common/top :: common_header">
+</div>
+<!-- Masthead-->
+<header class="masthead" style="background: url('./assets/img/bg-seoul.jpg') no-repeat center center;">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="text-center text-white">
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Icons Grid-->
+<section class="features-icons bg-light">
+    <div class="container">
+       <form th:action method="post">
+           <div class="row">
+               <div th:each="tag : ${tags}" class="col-2">
+                   <div class="form-check">
+                       <input class="form-check-input" type="radio" th:id="${tagStat.count}" name="tag"
+                              th:value="${tag.key}" th:checked="${tag.key eq 'TRIP'}">
+                       <label class="form-check-label" th:for="${tagStat.count}" th:text="${tag.value}"></label>
+                   </div>
+               </div>
+           </div>
+           <div class="form-group mt-1">
+               <input class="form-control" name="title" placeholder="ex) 1월 오사카에 3박 4일 여행가요!">
+           </div>
+           <div class="form-group mt-2">
+               <textarea class="form-control" name="contents" placeholder="같이 밥먹을 20대 친구를 찾아요! (1000자 이내)"></textarea>
+           </div>
+           <div class="form-group row mt-2">
+               <div class="col-xl-6">
+                   <a th:href="@{/friend-search-board}" class="btn btn-secondary form-control">취소</a>
+               </div>
+               <div class="col-xl-6">
+                   <button type="submit" class="btn btn-primary form-control">저장하기</button>
+               </div>
+           </div>
+       </form>
+    </div>
+</section>
+<footer th:replace="common/footer :: common_footer">
+</footer>
+<!-- Jquery Import -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+</body>
+</html>

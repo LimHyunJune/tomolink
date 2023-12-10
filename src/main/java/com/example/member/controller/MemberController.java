@@ -4,6 +4,8 @@ import com.example.member.service.MemberService;
 import com.example.member.dto.SignInForm;
 import com.example.member.dto.SignUpForm;
 import com.example.member.entity.Member;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,15 +13,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
 @RequestMapping("/")
 public class MemberController {
+    public static class SessionConst {
+        public static final String LOGIN_MEMBER = "member";
+    }
     private final MemberService memberService;
     @Autowired
     public MemberController(MemberService memberService)
@@ -34,13 +36,22 @@ public class MemberController {
     }
 
     @PostMapping("signin")
-    public String signIn(@ModelAttribute SignInForm form, BindingResult bindingResult)
+    public String signIn(@ModelAttribute SignInForm form, BindingResult bindingResult,
+                         HttpServletRequest request, @RequestParam(defaultValue = "/", name = "redirectURL") String redirectURL)
     {
         Member member = memberService.findByEmail(form.getEmail());
+        log.info("MEMBER : {}",member);
         if(member == null || !member.getPassword().equals(form.getPassword()))
-            return "redirect:/signup";
+        {
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "redirect:/signin";
+        }
+
         log.info("signin success");
-        return "redirect:/";
+        // Session 저장
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, member);
+        return "redirect:" + redirectURL;
     }
 
     @GetMapping("signup")
@@ -51,7 +62,8 @@ public class MemberController {
     }
 
     @PostMapping("signup")
-    public String signUp(@Validated @ModelAttribute SignUpForm form, BindingResult bindingResult, Model model)
+    public String signUp(@Validated @ModelAttribute SignUpForm form, BindingResult bindingResult,
+                         Model model)
     {
         log.info("email = {}", form.getEmail());
         if(!form.getPassword().equals(form.getConfirmPassword()))
