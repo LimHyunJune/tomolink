@@ -313,6 +313,9 @@ table {
   border-collapse: collapse;
 }
 
+
+
+
 caption {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -357,6 +360,10 @@ textarea {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+}
+
+textarea:focus{
+    outline:none;
 }
 
 button,
@@ -10851,9 +10858,7 @@ header.masthead {
   padding-bottom: 8rem;
 }
 header.masthead:before {
-  content: "";
   position: absolute;
-  background-color: #1c375e;
   height: 100%;
   width: 100%;
   top: 0;
@@ -10927,7 +10932,7 @@ footer.footer {
 
 .side-card
 {
-    height:30vh;
+    height:40vh;
 }
 
 textarea{
