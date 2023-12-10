@@ -3,9 +3,14 @@ package com.example.friend_search.controller;
 import com.example.friend_search.dto.FriendSearchPostForm;
 import com.example.friend_search.entity.FriendSearch;
 import com.example.friend_search.service.FriendSearchService;
+import com.example.member.controller.MemberController;
+import com.example.member.entity.Member;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.cj.Session;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +19,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.http.HttpRequest;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -42,36 +49,33 @@ public class FriendSearchController {
     }
 
     @GetMapping("friend-search-board")
-    public String friendSearchBoard(Model model) throws JsonProcessingException {
+    public String friendSearchBoard(Model model) {
 
         List<FriendSearch> friendSearchPosts = friendSearchService.findAll();
         model.addAttribute("friendSearchPosts",friendSearchPosts);
         return "friend-search-board";
     }
 
-    @GetMapping("friend-search-post")
+    @GetMapping("friend-search-post-form")
     public String friendSearchPostForm(Model model)
     {
-        return "friend-search-post";
+        return "friend-search-post-form";
     }
 
-    @GetMapping("friend-search-post/{id}")
-    @ResponseBody
-    public String friendSearchPostFormByID(@PathVariable(value = "id") String id, Model model)
-    {
-        log.info("ID : {}",id);
-        return id;
-    }
-
-    @PostMapping("friend-search-post")
-    public String friendSearchPost(@ModelAttribute FriendSearchPostForm friendSearchPostForm, BindingResult bindingResult, Model model) {
-        log.info("TITLE {}",friendSearchPostForm.getTitle());
+    @PostMapping("friend-search-post-form")
+    public String friendSearchPostForm(@ModelAttribute FriendSearchPostForm friendSearchPostForm
+            , BindingResult bindingResult, Model model, HttpServletRequest request) {
         try
         {
+            HttpSession session = request.getSession(false);
+            Member member = (Member) session.getAttribute(MemberController.SessionConst.LOGIN_MEMBER);
+
             FriendSearch friendSearch = FriendSearch.builder()
                     .title(friendSearchPostForm.getTitle())
                     .contents(friendSearchPostForm.getContents())
-                    .tag(friendSearchPostForm.getTag()).build();
+                    .tag(friendSearchPostForm.getTag())
+                    .createdAt(LocalDateTime.now())
+                    .memberId(member.getId()).build();
             friendSearchService.save(friendSearch);
         }
         catch (Exception e)
@@ -79,5 +83,13 @@ public class FriendSearchController {
             log.info("ERROR {}",e.getMessage());
         }
         return "redirect:/friend-search-board";
+    }
+
+    @GetMapping("friend-search-post/{id}")
+    public String friendSearchPost(@PathVariable(value = "id") Long id, Model model)
+    {
+        Optional<FriendSearch> friendSearch = friendSearchService.findById(id);
+        friendSearch.ifPresent(search -> model.addAttribute("friendSearch", search));
+        return "friend-search-post";
     }
 }
