@@ -2,7 +2,7 @@
 <div th:fragment="common_header" class="container mb-3 mt-2">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">TOMOLINK</a>
+            <a class="navbar-brand" th:href="@{/}">TOMOLINK</a>
             <ul class="nav justify-content-end invisible-group">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">홈</a>
@@ -11,14 +11,14 @@
                     <a class="nav-link" href="#">커뮤니티</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="signin">로그인</a>
+                    <a class="nav-link" aria-current="page" th:href="@{/signin}">로그인</a>
                 </li>
                 <li class="nav-item dropdown ">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         글쓰기
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="friend-search-post">친구를 구해요</a></li>
+                        <li><a class="dropdown-item" th:href="@{/friend-search-post-form}">친구를 구해요</a></li>
                         <li><a class="dropdown-item" href="#">토모링크 얼굴 등록</a></li>
                     </ul>
                 </li>
