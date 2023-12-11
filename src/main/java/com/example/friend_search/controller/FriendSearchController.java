@@ -1,7 +1,10 @@
 package com.example.friend_search.controller;
 
+import com.example.friend_search.dto.FriendSearchCommentsForm;
 import com.example.friend_search.dto.FriendSearchPostForm;
 import com.example.friend_search.entity.FriendSearch;
+import com.example.friend_search.entity.FriendSearchComments;
+import com.example.friend_search.service.FriendSearchCommentsService;
 import com.example.friend_search.service.FriendSearchService;
 import com.example.member.controller.MemberController;
 import com.example.member.entity.Member;
@@ -29,11 +32,13 @@ import java.util.*;
 public class FriendSearchController {
 
     private final FriendSearchService friendSearchService;
+    private final FriendSearchCommentsService friendSearchCommentsService;
 
     @Autowired
-    public FriendSearchController(FriendSearchService friendSearchService)
+    public FriendSearchController(FriendSearchService friendSearchService, FriendSearchCommentsService friendSearchCommentsService)
     {
         this.friendSearchService = friendSearchService;
+        this.friendSearchCommentsService = friendSearchCommentsService;
     }
 
     @ModelAttribute("tags")
@@ -86,10 +91,31 @@ public class FriendSearchController {
     }
 
     @GetMapping("friend-search-post/{id}")
-    public String friendSearchPost(@PathVariable(value = "id") Long id, Model model)
+    public String friendSearchPost(@PathVariable(value = "id") Long id, Model model, HttpServletRequest request)
     {
         Optional<FriendSearch> friendSearch = friendSearchService.findById(id);
         friendSearch.ifPresent(search -> model.addAttribute("friendSearch", search));
+
+        List<FriendSearchComments> friendSearchComments = friendSearchCommentsService.findByPostId(request, id);
+        model.addAttribute("friendSearchComments",friendSearchComments);
         return "friend-search-post";
+    }
+
+    @PostMapping("friend-search-comments")
+    public String friendSearchPostComments(@RequestParam(name = "isSecret") Boolean isSecret
+            ,@ModelAttribute FriendSearchCommentsForm friendSearchCommentsForm
+            ,BindingResult bindingResult
+            ,HttpServletRequest request)
+    {
+        HttpSession session = request.getSession(false);
+        Member member = (Member) session.getAttribute(MemberController.SessionConst.LOGIN_MEMBER);
+
+        FriendSearchComments friendSearchComments = FriendSearchComments.builder()
+                .postId(friendSearchCommentsForm.getPostId())
+                .memberId(member.getId())
+                .contents(friendSearchCommentsForm.getContents())
+                .isSecret(isSecret).build();
+        friendSearchCommentsService.save(friendSearchComments);
+        return "redirect:/friend-search-post/" + friendSearchComments.getPostId();
     }
 }
