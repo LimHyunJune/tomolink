@@ -53,18 +53,20 @@ height:20vh;">
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="px-4 py-3 text-sm" style="font-weight:bold;">baj2121</td>
-                    <td class="px-4 py-3 text-sm">오 저랑 밥먹어요!</td>
+                <tr th:each="friendSearchComment : ${friendSearchComments}">
+                    <td class="px-4 py-3 text-sm" style="font-weight:bold;" th:text="${friendSearchComment.name}"></td>
+                    <td class="px-4 py-3 text-sm" th:if="${friendSearchComment.isVisible}" th:text="${friendSearchComment.contents}"></td>
+                    <td class="px-4 py-3 text-sm" th:unless="${friendSearchComment.isVisible}" >비밀 댓글 입니다.</td>
                 </tr>
             </tbody>
         </table>
-        <form class="row mt-5">
+        <form class="row mt-5" th:action="@{/friend-search-comments}" method="post">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="댓글을 남겨주세요 (자물쇠 비밀 댓글 남기기)" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <input type="text" class="form-control" placeholder="댓글을 남겨주세요 (자물쇠 비밀 댓글 남기기)" name="contents" aria-describedby="basic-addon2">
+                <input type="text" name="postId" hidden="hidden" th:value="${friendSearch.id}">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">남기기</button>
-                    <button class="btn btn-outline-secondary" type="button"><i class="fa fa-lock"></i></button>
+                    <button class="btn btn-outline-secondary" type="submit" name="isSecret" value="0">남기기</button>
+                    <button class="btn btn-outline-secondary" type="submit" name="isSecret" value="1"><i class="fa fa-lock"></i></button>
                 </div>
             </div>
         </form>
