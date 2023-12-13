@@ -37,3 +37,5 @@ out/
 .vscode/
 src/main/resources/application.properties
 src/main/generated/com/example/friend_search/entity/QFriendSearchComments.java
+src/main/generated/com/example/member/entity/QMember.java
+src/main/generated/com/example/friend_search/entity/QFriendSearch.java
