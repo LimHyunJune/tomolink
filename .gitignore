@@ -36,3 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 src/main/resources/application.properties
+src/main/generated/com/example/friend_search/entity/QFriendSearchComments.java

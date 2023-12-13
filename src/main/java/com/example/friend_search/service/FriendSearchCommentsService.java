@@ -1,6 +1,7 @@
 package com.example.friend_search.service;
 
 import com.example.friend_search.entity.FriendSearchComments;
+import com.example.friend_search.repository.FriendSearchCommentQueryRepository;
 import com.example.friend_search.repository.FriendSearchCommentsRepository;
 import com.example.friend_search.repository.FriendSearchRepository;
 import com.example.member.controller.MemberController;
@@ -19,12 +20,16 @@ import java.util.Optional;
 public class FriendSearchCommentsService {
 
     private final FriendSearchCommentsRepository friendSearchCommentsRepository;
+    private final FriendSearchCommentQueryRepository friendSearchCommentQueryRepository;
+
     private final MemberService memberService;
 
     @Autowired
     FriendSearchCommentsService(FriendSearchCommentsRepository friendSearchCommentsRepository,
+                                FriendSearchCommentQueryRepository friendSearchCommentQueryRepository,
                                 MemberService memberService)
     {
+        this.friendSearchCommentQueryRepository = friendSearchCommentQueryRepository;
         this.friendSearchCommentsRepository = friendSearchCommentsRepository;
         this.memberService = memberService;
     }
@@ -35,27 +40,14 @@ public class FriendSearchCommentsService {
         return friendSearchCommentsRepository.save(friendSearchComments);
     }
 
-    public List<FriendSearchComments> findByPostId(HttpServletRequest request, Long postId)
-    {
+    public List<FriendSearchComments> findByPostId(HttpServletRequest request, Long postId) {
         HttpSession session = request.getSession(false);
         Member sessionMember = (Member) session.getAttribute(MemberController.SessionConst.LOGIN_MEMBER);
+        List<FriendSearchComments> friendSearchComments = friendSearchCommentQueryRepository.findByPostId(postId, sessionMember.getId());
 
-        List<FriendSearchComments> friendSearchComments = friendSearchCommentsRepository.findByPostId(postId);
-        for(FriendSearchComments friendSearchComment : friendSearchComments)
-        {
-            Optional<Member> member = memberService.findById(friendSearchComment.getMemberId());
-            member.ifPresent(value -> friendSearchComment.setName(value.getName()));
-
-            if(friendSearchComment.getIsSecret() == false ||
-            (friendSearchComment.getIsSecret() == true && sessionMember.getId() == member.get().getId()))
-            {
-                friendSearchComment.setIsVisible(true);
-            }
-            else
-            {
-                friendSearchComment.setIsVisible(false);
-            }
-        }
+        friendSearchComments.forEach(comment -> {
+            memberService.findById(comment.getMemberId()).ifPresent(member-> comment.setName(member.getName()));
+        });
         return friendSearchComments;
     }
 }
