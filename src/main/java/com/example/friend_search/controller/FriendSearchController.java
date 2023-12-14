@@ -12,7 +12,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.Session;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
@@ -91,21 +94,27 @@ public class FriendSearchController {
     }
 
     @GetMapping("friend-search-post/{id}")
-    public String friendSearchPost(@PathVariable(value = "id") Long id, Model model, HttpServletRequest request)
+    public String friendSearchPost(@PathVariable(value = "id") Long id, Model model,
+                                   HttpServletRequest request,
+                                   @RequestParam(required = false, name = "scroll") Float scroll)
     {
         Optional<FriendSearch> friendSearch = friendSearchService.findById(id);
         friendSearch.ifPresent(search -> model.addAttribute("friendSearch", search));
 
         List<FriendSearchComments> friendSearchComments = friendSearchCommentsService.findByPostId(request, id);
         model.addAttribute("friendSearchComments",friendSearchComments);
+        model.addAttribute("scroll", scroll);
         return "friend-search-post";
     }
 
     @PostMapping("friend-search-comments")
     public String friendSearchPostComments(@RequestParam(name = "isSecret") Boolean isSecret
-            ,@ModelAttribute FriendSearchCommentsForm friendSearchCommentsForm
-            ,BindingResult bindingResult
-            ,HttpServletRequest request)
+            , @ModelAttribute FriendSearchCommentsForm friendSearchCommentsForm
+            , BindingResult bindingResult
+            , HttpServletRequest request
+            , HttpServletResponse response
+            , @CookieValue(name="scroll", required = false) Float scroll
+            , RedirectAttributes redirectAttributes)
     {
         HttpSession session = request.getSession(false);
         Member member = (Member) session.getAttribute(MemberController.SessionConst.LOGIN_MEMBER);
@@ -114,8 +123,15 @@ public class FriendSearchController {
                 .postId(friendSearchCommentsForm.getPostId())
                 .memberId(member.getId())
                 .contents(friendSearchCommentsForm.getContents())
-                .isSecret(isSecret).build();
+                .isSecret(isSecret)
+                .createdAt(LocalDateTime.now()).build();
         friendSearchCommentsService.save(friendSearchComments);
+
+        log.info("scrollY : {}", scroll);
+        redirectAttributes.addAttribute("scroll", scroll);
+        Cookie myCookie = new Cookie("scroll", null);
+        myCookie.setMaxAge(0);
+        response.addCookie(myCookie);
         return "redirect:/friend-search-post/" + friendSearchComments.getPostId();
     }
 }
