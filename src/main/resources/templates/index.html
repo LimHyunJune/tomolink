@@ -16,6 +16,8 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/tailwind.output.css}" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
 </head>
 <body>
 <!-- Navigation-->
@@ -38,7 +40,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="row">
-                    <a href="/friend-search-board">
+                    <a th:href="@{/friend-search-board}">
                         <div class="card text-bg-dark row-card">
                             <img th:src="@{assets/img/bg-sky.jpg}" class="card-img round-3" style="height:20vh;  opacity: 0.3">
                             <div class="card-img-overlay">
@@ -61,7 +63,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <a href="#">
+                <a th:href="@{/tomo-face-board}">
                     <div class="card text-bg-dark mt-2 side-card">
                         <img th:src="@{assets/img/bg-face.jpg}" class="card-img" style="height:40vh;  opacity: 0.3">
                         <div class="card-img-overlay">
