@@ -83,4 +83,14 @@ public class MemberController {
         memberService.save(member);
         return "redirect:/signin";
     }
+
+    @GetMapping("signout")
+    public String signout(HttpServletRequest request)
+    {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/";
+    }
 }

@@ -4,22 +4,28 @@
         <div class="container-fluid">
             <a class="navbar-brand" th:href="@{/}">TOMOLINK</a>
             <ul class="nav justify-content-end invisible-group">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">홈</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">커뮤니티</a>
-                </li>
-                <li class="nav-item">
+                <li class="nav-item" th:if="${session.member == null}">
                     <a class="nav-link" aria-current="page" th:href="@{/signin}">로그인</a>
                 </li>
-                <li class="nav-item dropdown ">
+                <li class="nav-item" th:if="${session.member == null}">
+                    <a class="nav-link" aria-current="page" th:href="@{/signup}">회원가입</a>
+                </li>
+                <li class="nav-item dropdown" th:if="${session.member != null}">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-user"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{/mypage}">마이페이지</a></li>
+                        <li><a class="dropdown-item" th:href="@{/signout}">로그아웃</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         글쓰기
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" th:href="@{/friend-search-post-form}">친구를 구해요</a></li>
-                        <li><a class="dropdown-item" href="#">토모링크 얼굴 등록</a></li>
+                        <li><a class="dropdown-item" th:href="@{/tomo-face-post-form}">토모링크 얼굴 등록</a></li>
                     </ul>
                 </li>
             </ul>
