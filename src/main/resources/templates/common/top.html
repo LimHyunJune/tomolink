@@ -15,7 +15,7 @@
                         <i class="fa fa-user"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" th:href="@{/mypage}">마이페이지</a></li>
+                        <li><a class="dropdown-item" th:href="@{/{name}(name=${session.member.name})}">마이페이지</a></li>
                         <li><a class="dropdown-item" th:href="@{/signout}">로그아웃</a></li>
                     </ul>
                 </li>
