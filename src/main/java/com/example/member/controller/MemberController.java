@@ -93,4 +93,10 @@ public class MemberController {
         }
         return "redirect:/";
     }
+
+    @GetMapping("{name}")
+    public String mypage(@PathVariable(name = "name") String name, Model model){
+        model.addAttribute("name", name);
+        return "mypage";
+    }
 }
