@@ -1,27 +1,23 @@
 package com.example.tomo_face.controller;
 
 import com.example.common.util.FileUploadUtil;
-import com.example.friend_search.entity.FriendSearch;
-import com.example.friend_search.entity.FriendSearchComments;
-import com.example.member.controller.MemberController;
 import com.example.member.entity.Member;
 import com.example.member.service.MemberService;
-import com.example.tomo_face.dto.TomoFacePostForm;
+import com.example.tomo_face.dto.ProfileForm;
+import com.example.tomo_face.entity.Profile;
 import com.example.tomo_face.entity.TomoFace;
-import com.example.tomo_face.service.TomoFaceService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import com.example.tomo_face.service.ProfileService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,74 +25,56 @@ import java.util.Optional;
 @Controller
 public class TomoFaceController {
     private final FileUploadUtil fileUploadUtil;
-    private final TomoFaceService tomoFaceService;
     private final MemberService memberService;
+    private final ProfileService profileService;
 
     TomoFaceController(FileUploadUtil fileUploadUtil,
-                       TomoFaceService tomoFaceService,
+                       ProfileService profileService,
                        MemberService memberService)
     {
         this.fileUploadUtil = fileUploadUtil;
-        this.tomoFaceService = tomoFaceService;
         this.memberService = memberService;
+        this.profileService = profileService;
     }
 
     @GetMapping("tomo-face-board")
     public String tomoFaceBoard(Model model) {
-        List<TomoFace> tomoFaces = tomoFaceService.findAll();
-        for(TomoFace face : tomoFaces)
-        {
-            Optional<Member> member = memberService.findById(face.getMemberId());
-            member.ifPresent(m-> {
-                face.setName(m.getName());
-            });
-        }
-        tomoFaces.sort((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()));
-        model.addAttribute("tomoFaces", tomoFaces);
+        List<Profile> profiles = profileService.findAll();
+        profiles.sort((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()));
+        model.addAttribute("profiles", profiles);
         return "tomo-face-board";
     }
 
-    @GetMapping("tomo-face-post/{id}")
-    public String tomoFacePost(@PathVariable(value = "id") Long id, Model model,
-                                   HttpServletRequest request,
-                                   @RequestParam(required = false, name = "scroll") Float scroll)
-    {
-        Optional<TomoFace> tomoFace = tomoFaceService.findById(id);
-        tomoFace.ifPresent(face -> model.addAttribute("tomoFace", face));
+    @GetMapping("{name}")
+    public String profile(@PathVariable(name = "name") String name, Model model){
+        Member member = memberService.findByName(name);
+        model.addAttribute("member", member);
 
-//        List<TomoFace> friendSearchComments = friendSearchCommentsService.findByPostId(request, id);
-//        model.addAttribute("friendSearchComments",friendSearchComments);
-        model.addAttribute("scroll", scroll);
-        return "tomo-face-post";
+        Optional<Profile> profile = profileService.findByName(name);
+        profile.ifPresent(p->{model.addAttribute("profile", p);});
+        if(profile.isEmpty())
+        {
+            Profile emptyProfile = Profile.builder()
+                    .tomoFace(false)
+                    .file("")
+                    .build();
+            model.addAttribute("profile", emptyProfile);
+        }
+        return "profile";
     }
 
-    @GetMapping("tomo-face-post-form")
-    public String tomoFacePostForm(Model model) {
-        return "tomo-face-post-form";
-    }
-
-    @PostMapping("tomo-face-post-form")
-    public String tomoFacePostForm(@ModelAttribute TomoFacePostForm tomoFacePostForm,
-                                   BindingResult bindingResult, Model model, HttpServletRequest request)
-    {
-        try
-        {
-            HttpSession session = request.getSession(false);
-            Member member = (Member) session.getAttribute(MemberController.SessionConst.LOGIN_MEMBER);
-
-            TomoFace tomoFace = TomoFace.builder()
-                    .title(tomoFacePostForm.getTitle())
-                    .contents(tomoFacePostForm.getContents())
-                    .file(fileUploadUtil.uploadFile(tomoFacePostForm.getFile()))
-                    .memberId(member.getId())
-                    .createdAt(LocalDateTime.now()).build();
-            tomoFaceService.save(tomoFace);
-        }
-        catch (Exception e)
-        {
-            log.info("ERROR {}",e.getMessage());
-        }
-        return "redirect:/tomo-face-board";
+    @PostMapping("{name}")
+    public String profileForm(@PathVariable(name = "name") String name, @ModelAttribute ProfileForm profileForm, Model model) throws IOException {
+        log.info("ProfileForm {}", profileForm);
+        Profile profile = Profile.builder()
+                .file(fileUploadUtil.uploadFile(profileForm.getFile()))
+                .introduce(profileForm.getIntroduce())
+                .name(profileForm.getName())
+                .tomoFace(profileForm.getTomoFace())
+                .createdAt(LocalDateTime.now()).build();
+        profileService.update(profile);
+        memberService.updateName(name);
+        return "redirect:" + URLEncoder.encode("/" + name, "UTF-8");
     }
 
     @ResponseBody

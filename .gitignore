@@ -40,3 +40,4 @@ src/main/generated/com/example/friend_search/entity/QFriendSearchComments.java
 src/main/generated/com/example/member/entity/QMember.java
 src/main/generated/com/example/friend_search/entity/QFriendSearch.java
 src/main/generated/com/example/tomo_face/entity/QTomoFace.java
+src/main/generated/com/example/tomo_face/entity/QProfile.java
