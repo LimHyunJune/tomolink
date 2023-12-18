@@ -33,32 +33,32 @@
                         margin: 0 auto;
                         cursor:pointer;"
                  id="face_image_area"
-                 th:if="${member.name eq session.member.name}"
+                 th:if="${member.id eq session.member.id}"
                  class="rounded">
             <img th:src="@{/images/{filename}(filename=${profile.file})}" alt="프로필 사진을 올려주세요."
                  style="height:30rem; width:30rem;
                         background-color:#D1D1D1;
                         margin: 0 auto;"
-                 th:unless="${member.name eq session.member.name}"
+                 th:unless="${member.id eq session.member.id}"
                  class="rounded">
         </div>
         <div class="container">
             <form th:action method="post" enctype="multipart/form-data">
                 <div class="form-group mt-1">
-                    <input class="form-control" name="name" th:unless="${member.name eq session.member.name}"
+                    <input class="form-control" name="name" th:unless="${member.id eq session.member.id}"
                            th:value="${member.name}" readonly>
-                    <input class="form-control" name="name" th:if="${member.name eq session.member.name}"
+                    <input class="form-control" name="name" th:if="${member.id eq session.member.id}"
                            th:value="${member.name}">
                 </div>
                 <div class="form-group mt-2">
                     <textarea class="form-control" name="introduce" placeholder="작성된 내용이 없습니다."
-                              th:unless="${member.name eq session.member.name}"
+                              th:unless="${member.id eq session.member.id}"
                               th:text="${profile.introduce}" readonly></textarea>
                     <textarea class="form-control" name="introduce" placeholder="작성된 내용이 없습니다."
-                              th:if="${member.name eq session.member.name}"
+                              th:if="${member.id eq session.member.id}"
                               th:text="${profile.introduce}"></textarea>
                 </div>
-                <div class="form-group row mt-2" th:if="${member.name eq session.member.name}">
+                <div class="form-group row mt-2" th:if="${member.id eq session.member.id}">
                     <div class="col">
                         <input type="checkbox" id="tomoFace" th:field="${profile.tomoFace}" class="formcheck-input">
                         <label for="tomoFace" class="form-check-label">토모 링크의 얼굴들 게시</label>
@@ -67,9 +67,9 @@
                 <div class="form-group row mt-2">
                     <div class="col">
                         <button type="submit" class="btn btn-primary form-control"
-                                th:if="${member.name eq session.member.name}">등록하기</button>
+                                th:if="${member.id eq session.member.id}">등록하기</button>
                         <button class="btn btn-primary form-control"
-                                th:unless="${member.name eq session.member.name}">메시지 보내기</button>
+                                th:unless="${member.id eq session.member.id}">메시지 보내기</button>
                     </div>
                 </div>
                 <input type="file" hidden="hidden" name="file" id="face_image_input">
@@ -131,7 +131,7 @@
                     </thead>
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                     <tr class="text-gray-700 dark:text-gray-400"
-                        th:each ="post : ${friendSearchPosts}"
+                        th:each ="post : ${friendSearches}"
                         th:onclick="|location.href='@{/friend-search-post/{id}(id=${post.id})}'|"
                         style="cursor:pointer">
                         <td class="px-4 py-3">
@@ -172,8 +172,8 @@
                     </thead>
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                     <tr class="text-gray-700 dark:text-gray-400"
-                        th:each ="post : ${friendSearchPosts}"
-                        th:onclick="|location.href='@{/friend-search-post/{id}(id=${post.id})}'|"
+                        th:each ="comment : ${friendSearchComments}"
+                        th:onclick="|location.href='@{/friend-search-post/{id}(id=${comment.postId})}'|"
                         style="cursor:pointer">
                         <td class="px-4 py-3">
                             <div class="flex items-center text-sm">
@@ -194,8 +194,8 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-4 py-3 text-sm" th:text="${post.title}"></td>
-                        <td class="px-4 py-3 text-sm" th:text="${{post.createdAt}}">
+                        <td class="px-4 py-3 text-sm" th:text="${comment.contents}"></td>
+                        <td class="px-4 py-3 text-sm" th:text="${{comment.createdAt}}">
                         </td>
                     </tr>
                     </tbody>

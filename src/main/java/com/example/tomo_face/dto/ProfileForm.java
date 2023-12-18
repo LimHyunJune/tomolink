@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ProfileForm {
     String name;
+    Long memberId;
     String introduce;
     MultipartFile file;
     Boolean tomoFace;

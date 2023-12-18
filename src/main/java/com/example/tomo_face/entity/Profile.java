@@ -19,7 +19,7 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String name;
+    Long memberId;
     String introduce;
     String file;
     Boolean tomoFace;
@@ -31,4 +31,7 @@ public class Profile {
     public void prePersist(){
         this.file = this.file == null ? "" : this.file;
     }
+
+    @Transient
+    String name;
 }

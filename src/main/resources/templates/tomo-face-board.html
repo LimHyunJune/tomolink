@@ -44,19 +44,18 @@
 <section class="features-icons bg-light main-contents">
     <div class="container">
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col" th:each="tomoFace : ${tomoFaces}"
-                 th:onclick="|location.href='@{/tomo-face-post/{id}(id=${tomoFace.id})}'|"
+            <div class="col" th:each="profile : ${profiles}"
+                 th:onclick="|location.href='@{/{id}(id=${profile.memberId})}'|"
                  style="cursor:pointer;">
                 <div class="card h-100">
                     <div class="card-header">
-                        <b th:text="${tomoFace.name}"></b>
+                        <b th:text="${profile.name}"></b>
                     </div>
-                    <img th:src="@{/images/{filename}(filename=${tomoFace.file})}"
+                    <img th:src="@{/images/{filename}(filename=${profile.file})}"
                          class="card-img-top" style="height:30vh;">
                     <div class="card-body">
                         <b class="card-title"
-                           style="font-size:15px;" th:text="${tomoFace.title}"></b>
-                        <p class="mt-2" th:text="${tomoFace.contents}"></p>
+                           style="font-size:15px;" th:text="${profile.introduce}"></b>
                     </div>
                 </div>
             </div>

@@ -28,4 +28,14 @@ public class MemberService {
     public Optional<Member> findById(Long memberId) {
         return memberRepository.findById(memberId);
     }
+
+    public Member findByName(String name) {
+        return memberRepository.findByName(name);
+    }
+
+    @Transactional
+    public void update(Member memberForm) {
+        Optional<Member> member = findById(memberForm.getId());
+        member.ifPresent(m->{m.setName(memberForm.getName());});
+    }
 }

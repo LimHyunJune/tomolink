@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface FriendSearchCommentsRepository extends JpaRepository<FriendSearchComments, Long> {
     List<FriendSearchComments> findByPostId(Long postId);
+    List<FriendSearchComments> findByMemberId(Long id);
 }

@@ -1,6 +1,10 @@
 package com.example.tomo_face.service;
 
+import com.example.member.entity.Member;
+import com.example.member.repository.MemberRepository;
+import com.example.member.service.MemberService;
 import com.example.tomo_face.entity.Profile;
+import com.example.tomo_face.repository.ProfileQueryRepository;
 import com.example.tomo_face.repository.ProfileRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,10 +17,17 @@ import java.util.Optional;
 @Service
 public class ProfileService {
     private final ProfileRepository profileRepository;
+    private final ProfileQueryRepository profileQueryRepository;
 
-    ProfileService(ProfileRepository profileRepository)
+    private final MemberRepository memberRepository;
+
+    ProfileService(ProfileRepository profileRepository,
+                   ProfileQueryRepository profileQueryRepository,
+                   MemberRepository memberRepository)
     {
         this.profileRepository = profileRepository;
+        this.profileQueryRepository = profileQueryRepository;
+        this.memberRepository = memberRepository;
     }
 
     public List<Profile> findAll() {
@@ -28,25 +39,29 @@ public class ProfileService {
         return profileRepository.save(profile);
     }
 
-    public Optional<Profile> findByName(String name) {
-        return profileRepository.findByName(name);
-    }
-
     @Transactional
     public void update(Profile profile) {
-        Optional<Profile> updatedProfile = profileRepository.findByName(profile.getName());
+        Optional<Profile> updatedProfile = profileRepository.findByMemberId(profile.getMemberId());
         updatedProfile.ifPresent(p->{
-            log.info("profile present");
             p.setFile(profile.getFile());
-            p.setName(profile.getName());
             p.setIntroduce(profile.getIntroduce());
             p.setCreatedAt(profile.getCreatedAt());
             p.setTomoFace(profile.getTomoFace());
+            log.info("update profile : {}", p);
         });
-        if(updatedProfile.isEmpty())
+    }
+
+    public Optional<Profile> findByMemberId(Long memberId) {
+        return profileRepository.findByMemberId(memberId);
+    }
+
+    public List<Profile> findTomoFaceProfiles() {
+        List<Profile> profiles = profileQueryRepository.findTomoFaceProfiles();
+        for(Profile profile : profiles)
         {
-            log.info("profile empty");
-            save(profile);
+            Optional<Member> member = memberRepository.findById(profile.getMemberId());
+            member.ifPresent(m ->{profile.setName(m.getName());});
         }
+        return profiles;
     }
 }

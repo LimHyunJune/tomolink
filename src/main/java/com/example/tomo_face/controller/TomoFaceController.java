@@ -1,12 +1,15 @@
 package com.example.tomo_face.controller;
 
 import com.example.common.util.FileUploadUtil;
+import com.example.friend_search.service.FriendSearchCommentsService;
+import com.example.friend_search.service.FriendSearchService;
 import com.example.member.entity.Member;
 import com.example.member.service.MemberService;
 import com.example.tomo_face.dto.ProfileForm;
 import com.example.tomo_face.entity.Profile;
-import com.example.tomo_face.entity.TomoFace;
 import com.example.tomo_face.service.ProfileService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.Local;
 import org.springframework.core.io.UrlResource;
@@ -27,30 +30,36 @@ public class TomoFaceController {
     private final FileUploadUtil fileUploadUtil;
     private final MemberService memberService;
     private final ProfileService profileService;
+    private final FriendSearchService friendSearchService;
+    private final FriendSearchCommentsService friendSearchCommentsService;
 
     TomoFaceController(FileUploadUtil fileUploadUtil,
                        ProfileService profileService,
-                       MemberService memberService)
+                       MemberService memberService,
+                       FriendSearchService friendSearchService,
+                       FriendSearchCommentsService friendSearchCommentsService)
     {
         this.fileUploadUtil = fileUploadUtil;
         this.memberService = memberService;
         this.profileService = profileService;
+        this.friendSearchService = friendSearchService;
+        this.friendSearchCommentsService = friendSearchCommentsService;
     }
 
     @GetMapping("tomo-face-board")
     public String tomoFaceBoard(Model model) {
-        List<Profile> profiles = profileService.findAll();
+        List<Profile> profiles = profileService.findTomoFaceProfiles();
         profiles.sort((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()));
         model.addAttribute("profiles", profiles);
         return "tomo-face-board";
     }
 
-    @GetMapping("{name}")
-    public String profile(@PathVariable(name = "name") String name, Model model){
-        Member member = memberService.findByName(name);
-        model.addAttribute("member", member);
+    @GetMapping("{id}")
+    public String profile(@PathVariable(name = "id") Long id, Model model){
+        Optional<Member> member = memberService.findById(id);
+        member.ifPresent(m->{model.addAttribute("member", m);});
 
-        Optional<Profile> profile = profileService.findByName(name);
+        Optional<Profile> profile = profileService.findByMemberId(id);
         profile.ifPresent(p->{model.addAttribute("profile", p);});
         if(profile.isEmpty())
         {
@@ -60,21 +69,57 @@ public class TomoFaceController {
                     .build();
             model.addAttribute("profile", emptyProfile);
         }
+
+        model.addAttribute("friendSearches", friendSearchService.findByMemberId(id));
+        model.addAttribute("friendSearchComments", friendSearchCommentsService.findByMemberId(id));
         return "profile";
     }
 
-    @PostMapping("{name}")
-    public String profileForm(@PathVariable(name = "name") String name, @ModelAttribute ProfileForm profileForm, Model model) throws IOException {
-        log.info("ProfileForm {}", profileForm);
-        Profile profile = Profile.builder()
-                .file(fileUploadUtil.uploadFile(profileForm.getFile()))
-                .introduce(profileForm.getIntroduce())
-                .name(profileForm.getName())
-                .tomoFace(profileForm.getTomoFace())
-                .createdAt(LocalDateTime.now()).build();
-        profileService.update(profile);
-        memberService.updateName(name);
-        return "redirect:" + URLEncoder.encode("/" + name, "UTF-8");
+    @PostMapping("{id}")
+    public String profileForm(@PathVariable(name = "id") Long id
+            , @ModelAttribute ProfileForm profileForm
+            , @RequestParam(name = "name") String name
+            , Model model
+            , HttpServletRequest request) throws IOException {
+        Optional<Profile> profile = profileService.findByMemberId(id);
+        profile.ifPresent(p->{
+            p.setTomoFace(profileForm.getTomoFace());
+            p.setIntroduce(profileForm.getIntroduce());
+            p.setCreatedAt(LocalDateTime.now());
+            if(!profileForm.getFile().isEmpty()) {
+                try {
+                    p.setFile(fileUploadUtil.uploadFile(profileForm.getFile()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            profileService.update(p);
+        });
+
+        HttpSession session = request.getSession(false);
+        Member sessionMember = (Member) session.getAttribute("member");
+        if(profile.isEmpty())
+        {
+            Profile emptyProfile = Profile.builder()
+                    .introduce(profileForm.getIntroduce())
+                    .memberId(sessionMember.getId())
+                    .tomoFace(profileForm.getTomoFace())
+                    .createdAt(LocalDateTime.now()).build();
+            if(profileForm.getFile() != null) {
+                try {
+                    emptyProfile.setFile(fileUploadUtil.uploadFile(profileForm.getFile()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            profileService.save(emptyProfile);
+        }
+
+        Optional<Member> member = memberService.findById(sessionMember.getId());
+        member.ifPresent(m -> {
+            m.setName(name);
+            memberService.update(m);});
+        return "redirect:/" + id;
     }
 
     @ResponseBody
