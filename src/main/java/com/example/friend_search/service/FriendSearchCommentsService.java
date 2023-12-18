@@ -50,4 +50,8 @@ public class FriendSearchCommentsService {
         });
         return friendSearchComments;
     }
+
+    public List<FriendSearchComments> findByMemberId(Long id) {
+        return friendSearchCommentsRepository.findByMemberId(id);
+    }
 }

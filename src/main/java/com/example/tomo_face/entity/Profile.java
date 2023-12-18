@@ -1,6 +1,5 @@
 package com.example.tomo_face.entity;
 
-import com.example.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,25 +9,29 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class TomoFace {
-
+@Entity
+public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     Long memberId;
-    String title;
-    String contents;
+    String introduce;
     String file;
-
-    @Transient
-    String name;
+    Boolean tomoFace;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist(){
+        this.file = this.file == null ? "" : this.file;
+    }
+
+    @Transient
+    String name;
 }

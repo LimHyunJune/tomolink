@@ -34,4 +34,8 @@ public class FriendSearchService {
     public Optional<FriendSearch> findById(Long id) {
         return friendSearchRepository.findById(id);
     }
+
+    public List<FriendSearch> findByMemberId(Long id) {
+        return friendSearchRepository.findByMemberId(id);
+    }
 }

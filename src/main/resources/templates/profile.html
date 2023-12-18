@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Tomolink</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" type="text/css" />
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/tailwind.output.css}" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+</head>
+<body>
+<!-- Navigation-->
+<div th:replace="common/top :: common_header">
+</div>
+
+<div class="row">
+    <div class="col-4">
+        <div class="container" style="text-align:center;">
+            <img th:src="@{/images/{filename}(filename=${profile.file})}" alt="프로필 사진을 올려주세요."
+                 style="height:30rem; width:30rem;
+                        background-color:#D1D1D1;
+                        margin: 0 auto;
+                        cursor:pointer;"
+                 id="face_image_area"
+                 th:if="${member.id eq session.member.id}"
+                 class="rounded">
+            <img th:src="@{/images/{filename}(filename=${profile.file})}" alt="프로필 사진을 올려주세요."
+                 style="height:30rem; width:30rem;
+                        background-color:#D1D1D1;
+                        margin: 0 auto;"
+                 th:unless="${member.id eq session.member.id}"
+                 class="rounded">
+        </div>
+        <div class="container">
+            <form th:action method="post" enctype="multipart/form-data">
+                <div class="form-group mt-1">
+                    <input class="form-control" name="name" th:unless="${member.id eq session.member.id}"
+                           th:value="${member.name}" readonly>
+                    <input class="form-control" name="name" th:if="${member.id eq session.member.id}"
+                           th:value="${member.name}">
+                </div>
+                <div class="form-group mt-2">
+                    <textarea class="form-control" name="introduce" placeholder="작성된 내용이 없습니다."
+                              th:unless="${member.id eq session.member.id}"
+                              th:text="${profile.introduce}" readonly></textarea>
+                    <textarea class="form-control" name="introduce" placeholder="작성된 내용이 없습니다."
+                              th:if="${member.id eq session.member.id}"
+                              th:text="${profile.introduce}"></textarea>
+                </div>
+                <div class="form-group row mt-2" th:if="${member.id eq session.member.id}">
+                    <div class="col">
+                        <input type="checkbox" id="tomoFace" th:field="${profile.tomoFace}" class="formcheck-input">
+                        <label for="tomoFace" class="form-check-label">토모 링크의 얼굴들 게시</label>
+                    </div>
+                </div>
+                <div class="form-group row mt-2">
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary form-control"
+                                th:if="${member.id eq session.member.id}">등록하기</button>
+                        <button class="btn btn-primary form-control"
+                                th:unless="${member.id eq session.member.id}">메시지 보내기</button>
+                    </div>
+                </div>
+                <input type="file" hidden="hidden" name="file" id="face_image_input">
+            </form>
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="container">
+            <div class="row mt-5">
+                <b>메시지</b>
+                <table class="w-full whitespace-no-wrap table mt-2" id="message">
+                    <thead>
+                        <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                            <th class="px-4 py-3" style="width:20%">User</th>
+                            <th class="px-4 py-3" style="width:40%">Title</th>
+                            <th class="px-4 py-3" style="width:20%">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                        <tr class="text-gray-700 dark:text-gray-400"
+                            th:each ="post : ${friendSearchPosts}"
+                            th:onclick="|location.href='@{/friend-search-post/{id}(id=${post.id})}'|"
+                            style="cursor:pointer">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center text-sm">
+                                    <!-- Avatar with inset shadow -->
+                                    <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                                        <img class="object-cover w-full h-full rounded-full"
+                                             src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                                             alt=""
+                                             loading="lazy"/>
+                                        <div class="absolute inset-0 rounded-full shadow-inner"
+                                             aria-hidden="true"></div>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Hans Burger</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                                            10x Developer
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-sm" th:text="${post.title}"></td>
+                            <td class="px-4 py-3 text-sm" th:text="${{post.createdAt}}">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row mt-5">
+                <b>작성 게시글</b>
+                <table class="w-full whitespace-no-wrap table mt-2" id="post">
+                    <thead>
+                    <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3" style="width:20%">User</th>
+                        <th class="px-4 py-3" style="width:40%">Title</th>
+                        <th class="px-4 py-3" style="width:20%">Date</th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    <tr class="text-gray-700 dark:text-gray-400"
+                        th:each ="post : ${friendSearches}"
+                        th:onclick="|location.href='@{/friend-search-post/{id}(id=${post.id})}'|"
+                        style="cursor:pointer">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <!-- Avatar with inset shadow -->
+                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                                    <img class="object-cover w-full h-full rounded-full"
+                                         src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                                         alt=""
+                                         loading="lazy"/>
+                                    <div class="absolute inset-0 rounded-full shadow-inner"
+                                         aria-hidden="true"></div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">Hans Burger</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                                        10x Developer
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm" th:text="${post.title}"></td>
+                        <td class="px-4 py-3 text-sm" th:text="${{post.createdAt}}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row mt-5">
+                <b>작성 답글</b>
+                <table class="w-full whitespace-no-wrap table mt-2" id="comments">
+                    <thead>
+                    <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3" style="width:20%">User</th>
+                        <th class="px-4 py-3" style="width:40%">Title</th>
+                        <th class="px-4 py-3" style="width:20%">Date</th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    <tr class="text-gray-700 dark:text-gray-400"
+                        th:each ="comment : ${friendSearchComments}"
+                        th:onclick="|location.href='@{/friend-search-post/{id}(id=${comment.postId})}'|"
+                        style="cursor:pointer">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center text-sm">
+                                <!-- Avatar with inset shadow -->
+                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                                    <img class="object-cover w-full h-full rounded-full"
+                                         src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                                         alt=""
+                                         loading="lazy"/>
+                                    <div class="absolute inset-0 rounded-full shadow-inner"
+                                         aria-hidden="true"></div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">Hans Burger</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                                        10x Developer
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm" th:text="${comment.contents}"></td>
+                        <td class="px-4 py-3 text-sm" th:text="${{comment.createdAt}}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="common/footer :: common_footer">
+</footer>
+<!-- Jquery Import -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+<script th:src="@{/js/profile.js}"></script>
+</body>
+</html>
