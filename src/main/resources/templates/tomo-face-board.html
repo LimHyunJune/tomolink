@@ -51,8 +51,11 @@
                     <div class="card-header">
                         <b th:text="${profile.name}"></b>
                     </div>
-                    <img th:src="@{/images/{filename}(filename=${profile.file})}"
-                         class="card-img-top" style="height:30vh;">
+                    <div class="card-image">
+                        <img th:src="@{/images/{filename}(filename=${profile.file})}"
+                             class="card-img-top" style="height:30vh;">
+                    </div>
+
                     <div class="card-body">
                         <b class="card-title"
                            style="font-size:15px;" th:text="${profile.introduce}"></b>
