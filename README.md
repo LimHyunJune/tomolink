@@ -13,13 +13,6 @@ Tomolink is an exchange platform for Korea and Japan.
 ### Flow
 ![image](https://github.com/LimHyunJune/tomolink/assets/48524793/ed1812b1-6dcf-430a-acd0-6dc8b641e49d)
 
-### Stack
-- Spring Boot  
-- Spring MVC  
-- Spring Data JPA  
-- JPA  
-- QueryDSL  
-- Thymeleaf  
 
 ### To do
 ver 2.0 : Advertising boards  
